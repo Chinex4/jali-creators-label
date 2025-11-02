@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --font-roboto: "Roboto", sans-serif;
+  --color-primary: #281900;
+  --color-neutral: #9b9184;
+  --color-jaliBlue: #187dd0;
+  --color-jaliOrange: #eb8715;
+}
+:root {
+  background: #fbf7f2;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
