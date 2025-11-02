@@ -42,6 +42,7 @@ export default function Footer() {
               Register as a Brand
             </JaliButton>
           </div>
+          shssbsu
         </div>
 
         <div className="flex flex-col md:flex-row gap-5 md:gap-0 items-center justify-between">
