@@ -115,6 +115,7 @@ export default function Hero() {
 
           <div className="mt-8 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
             <JaliButton
+              to="/register/creator"
               variant="primary"
               right={
                 <span>
@@ -125,6 +126,7 @@ export default function Hero() {
               Join as a Creator
             </JaliButton>
             <JaliButton
+              to="/register/business"
               variant="secondary"
               right={
                 <span>

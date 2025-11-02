@@ -60,7 +60,7 @@ function FaqItem({
         className="flex w-full items-center gap-5 px-6 py-5 text-left"
       >
         <PlusIcon open={open} />
-        <span className="text-xl md:text-2xl font-extrabold text-primary">
+        <span className="text-lg md:text-xl font-bold text-primary">
           {item.q}
         </span>
       </button>

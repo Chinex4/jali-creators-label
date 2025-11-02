@@ -18,9 +18,8 @@ export default function Footer() {
             <img className="w-40 md:w-[201px]" src="/images/logo.png" alt="" />
           </Link>
           {/* CTA row */}
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row items-center gap-4">
             <JaliButton
-              large={false}
               variant="primary"
               right={
                 <span>
@@ -32,7 +31,6 @@ export default function Footer() {
             </JaliButton>
 
             <JaliButton
-              large={false}
               variant="secondary"
               right={<span>
                   <img className="w-6" src="/images/briefcase.png" alt="" />
