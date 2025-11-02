@@ -3,7 +3,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-roboto: "Roboto", sans-serif;
+  --font-sans: "Montserrat", sans-serif;
+  --font-dela: "Dela Gothic One", sans-serif;
   --color-primary: #281900;
   --color-neutral: #9b9184;
   --color-jaliBlue: #187dd0;
@@ -16,4 +17,14 @@
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+
+@keyframes orbit {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+@keyframes orbit-rev {
+  from { transform: rotate(360deg); }
+  to   { transform: rotate(0deg);   }
 }
