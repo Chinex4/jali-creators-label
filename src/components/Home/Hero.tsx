@@ -73,6 +73,18 @@ export default function Hero() {
   return (
     <section className="mx-auto max-w-6xl px-4 pt-8 md:pt-12">
       <div className="relative overflow-hidden rounded-4xl md:rounded-[48px] bg-[#F2EDE7] px-5 md:px-12 py-10 md:py-12">
+        <img
+          src="/images/red.png"
+          alt=""
+          className="pointer-events-none select-none absolute -top-6 -right-4 w-24 md:w-52"
+          loading="lazy"
+        />
+        <img
+          src="/images/yellow.png"
+          alt=""
+          className="pointer-events-none select-none absolute bottom-0 md:-bottom-10 -left-4 md:-left-14 w-24 md:w-52"
+          loading="lazy"
+        />
         {/* Decorative orbit canvas */}
         <div className="absolute inset-0">
           {/* fix class: bg-gradient-to-b (not bg-linear-to-b) and subtlety */}
@@ -89,8 +101,8 @@ export default function Hero() {
           <h1
             className="font-dela font-extrabold text-primary tracking-wider
                          text-4xl leading-tight
-                         md:text-6xl md:leading-[1.05]
-                         lg:text-7xl"
+                         md:text-4xl md:leading-[1.05]
+                         lg:text-6xl"
           >
             <span className="block">We Make Creators</span>
             <span className="block">&amp; Brands Grow Together</span>
@@ -126,7 +138,7 @@ export default function Hero() {
         </div>
 
         {/* Reserve less vertical space than before */}
-        <div className="relative z-0 aspect-28/9 md:aspect-32/9"></div>
+        {/* <div className="relative z-0 aspect-28/9 md:aspect-32/9"></div> */}
 
         {/* Orbiting avatars */}
         <div className="pointer-events-none absolute inset-0 hero-orbits">
