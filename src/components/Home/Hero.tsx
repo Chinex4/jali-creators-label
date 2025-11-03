@@ -1,25 +1,29 @@
 import { motion } from "framer-motion";
 import JaliButton from "../ui/JaliButton";
 
-const AVATARS = Array.from({ length: 18 }, (_, i) => `/images/avatars/${i + 1}.png`);
+const AVATARS = Array.from(
+  { length: 30 },
+  (_, i) => `/images/avatars/${(i % 18) + 1}.png`
+);
 
-type TrackSpec = {
-  radius: number;        // px from center
-  count: number;         // avatars on this track
-  duration: number;      // secs per full revolution
-  reverse?: boolean;     // anticlockwise if true
-  size: number;          // avatar size
-  wobbleDelay?: number;  // start offset for gentle bob
+type RailSpec = {
+  xPercent: number; // horizontal position (0–100)
+  direction: "up" | "down";
+  count: number; // avatars per rail
+  size: number; // avatar size (px)
+  duration: number; // seconds for one travel
+  wobbleDelay?: number; // phase offset for gentle bob
 };
 
-const TRACKS: TrackSpec[] = [
-  { radius: 380, count: 6, duration: 56, reverse: false, size: 56, wobbleDelay: 0.0 }, // 1st: CW
-  { radius: 520, count: 5, duration: 64, reverse: true,  size: 52, wobbleDelay: 0.3 }, // 2nd: CCW
-  { radius: 660, count: 4, duration: 58, reverse: false, size: 52, wobbleDelay: 0.6 }, // 3rd: CW
-  { radius: 800, count: 3, duration: 70, reverse: true,  size: 48, wobbleDelay: 0.9 }, // 4th: CCW
-];
-
-function Avatar({ src, size = 48, delay = 0 }: { src: string; size?: number; delay?: number }) {
+function Avatar({
+  src,
+  size = 48,
+  delay = 0,
+}: {
+  src: string;
+  size?: number;
+  delay?: number;
+}) {
   return (
     <motion.div
       initial={{ y: 0 }}
@@ -28,51 +32,57 @@ function Avatar({ src, size = 48, delay = 0 }: { src: string; size?: number; del
       className="rounded-full ring-2 ring-white/70 shadow-md bg-white overflow-hidden"
       style={{ width: size, height: size }}
     >
-      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+      <img
+        src={src}
+        alt=""
+        className="w-full h-full object-cover"
+        loading="lazy"
+      />
     </motion.div>
   );
 }
 
-/**
- * A rotating track (big square, centered) with avatars positioned on a circle.
- * We rotate the whole track for continuous orbit. Each avatar is counter-rotated
- * to stay upright while moving.
- */
-function OrbitTrack({ spec, sources }: { spec: TrackSpec; sources: string[] }) {
-  const step = 360 / spec.count;
+function Rail({ spec, sources }: { spec: RailSpec; sources: string[] }) {
+  const start = spec.direction === "down" ? "-12%" : "112%";
+  const end = spec.direction === "down" ? "112%" : "-12%";
 
   return (
     <div
-      className="absolute left-1/2 top-1/2"
-      style={{
-        width: spec.radius * 2,
-        height: spec.radius * 2,
-        transform: "translate(-50%, -50%)",
-        animation: `${spec.reverse ? "orbit-rev" : "orbit"} ${spec.duration}s linear infinite`,
-        transformOrigin: "center",
-      }}
+      className="absolute top-0 bottom-0"
+      style={{ left: `${spec.xPercent}%`, transform: "translateX(-50%)" }}
+      aria-hidden
     >
-      {/* ring line */}
-      <div
-        className="absolute inset-0 rounded-full border border-primary/10"
-        aria-hidden
-      />
+      {/* the thin line */}
+      <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-primary/15" />
 
-      {/* avatars */}
+      {/* avatars on this rail */}
       {sources.map((src, i) => {
-        const angle = i * step; // degrees
+        const baseDelay = i * (spec.duration / sources.length) * 0.65;
+        const size = spec.size;
+        const start = spec.direction === "down" ? "-12%" : "112%";
+        const end = spec.direction === "down" ? "112%" : "-12%";
+
         return (
-          <div
+          <motion.div
             key={src + i}
-            className="absolute left-1/2 top-1/2"
-            style={{
-              transform: `rotate(${angle}deg) translate(${spec.radius}px) rotate(${-angle}deg)`,
-              transformOrigin: "0 0",
-              willChange: "transform",
+            className="absolute left-1/2 -translate-x-1/2 will-change-[top]"
+            style={{ width: size, height: size }}
+            initial={{ top: start }}
+            animate={{ top: [start, end] }}
+            transition={{
+              repeat: Infinity,
+              repeatType: "loop",
+              duration: spec.duration,
+              ease: "linear",
+              delay: baseDelay,
             }}
           >
-            <Avatar src={src} size={spec.size} delay={(i * 0.12) + (spec.wobbleDelay ?? 0)} />
-          </div>
+            <Avatar
+              src={src}
+              size={size}
+              delay={i * 0.1 + (spec.wobbleDelay ?? 0)}
+            />
+          </motion.div>
         );
       })}
     </div>
@@ -80,43 +90,123 @@ function OrbitTrack({ spec, sources }: { spec: TrackSpec; sources: string[] }) {
 }
 
 export default function Hero() {
-  // slice the first 18 avatars across 6/5/4/3
-  const [six, five, four, three] = [
-    AVATARS.slice(0, 6),
-    AVATARS.slice(6, 11),
-    AVATARS.slice(11, 15),
-    AVATARS.slice(15, 18),
+  // ----- RAIL SPECS (6 rails, alternating direction) -----
+  // xPercent spaces the rails nicely and stays responsive
+  const rails: RailSpec[] = [
+    {
+      xPercent: 8,
+      direction: "down",
+      count: 5,
+      size: 56,
+      duration: 14,
+      wobbleDelay: 0.0,
+    },
+    {
+      xPercent: 24,
+      direction: "up",
+      count: 5,
+      size: 54,
+      duration: 15,
+      wobbleDelay: 0.2,
+    },
+    {
+      xPercent: 40,
+      direction: "down",
+      count: 5,
+      size: 52,
+      duration: 13,
+      wobbleDelay: 0.4,
+    },
+    {
+      xPercent: 60,
+      direction: "up",
+      count: 5,
+      size: 52,
+      duration: 15,
+      wobbleDelay: 0.6,
+    },
+    {
+      xPercent: 76,
+      direction: "down",
+      count: 5,
+      size: 50,
+      duration: 14,
+      wobbleDelay: 0.8,
+    },
+    {
+      xPercent: 92,
+      direction: "up",
+      count: 5,
+      size: 48,
+      duration: 16,
+      wobbleDelay: 1.0,
+    },
   ];
+
+  // slice enough avatars to feed all rails
+  const totalNeeded = rails.reduce((a, r) => a + r.count, 0);
+  const pool = AVATARS.slice(0, totalNeeded);
+
+  // chunk helper
+  let cursor = 0;
+  const pick = (n: number) => {
+    const out = pool.slice(cursor, cursor + n);
+    cursor += n;
+    return out;
+  };
 
   return (
     <section className="mx-auto max-w-6xl px-4 pt-8 md:pt-12">
       <div className="relative overflow-hidden rounded-4xl md:rounded-[48px] bg-[#F2EDE7] px-5 md:px-12 py-10 md:py-12">
         {/* decor corners */}
-        <img src="/images/red.png" alt="" className="pointer-events-none select-none absolute -top-6 -right-4 w-24 md:w-52" />
-        <img src="/images/yellow.png" alt="" className="pointer-events-none select-none absolute bottom-0 md:-bottom-10 -left-4 md:-left-14 w-24 md:w-52" />
+        <img
+          src="/images/red.png"
+          alt=""
+          className="pointer-events-none select-none absolute -top-6 -right-4 w-24 md:w-52"
+        />
+        <img
+          src="/images/yellow.png"
+          alt=""
+          className="pointer-events-none select-none absolute bottom-0 md:-bottom-10 -left-4 md:-left-14 w-24 md:w-52"
+        />
 
+        {/* CONTENT (kept intact) */}
         <div className="relative z-20">
           <div className="mx-auto max-w-4xl">
-            {/* overlay plate */}
             <div className="relative">
               <div className="fuzzy-plate pointer-events-none absolute -inset-8 -z-10" />
               <div className="text-center">
-                <h1 className="font-dela font-bold text-primary tracking-wider
-                                text-4xl leading-tight md:text-4xl md:leading-[1.05] lg:text-6xl">
+                <h1
+                  className="font-dela font-bold text-primary tracking-wider
+                             text-4xl leading-tight md:text-4xl md:leading-[1.05] lg:text-6xl"
+                >
                   <span className="block">We Make Creators</span>
                   <span className="block">&amp; Brands Grow Together</span>
                 </h1>
 
                 <p className="mt-5 md:mt-6 text-primary/70 text-lg md:text-2xl">
                   Jali Creators Label built to empower{" "}
-                  <br className="hidden md:block" /> collaboration, creativity, and fair growth.
+                  <br className="hidden md:block" /> collaboration, creativity,
+                  and fair growth.
                 </p>
 
                 <div className="mt-8 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
-                  <JaliButton to="/register/creator" variant="primary" right={<img className="w-6" src="/images/emoji.png" alt="" />}>
+                  <JaliButton
+                    to="/register/creator"
+                    variant="primary"
+                    right={
+                      <img className="w-6" src="/images/emoji.png" alt="" />
+                    }
+                  >
                     Join as a Creator
                   </JaliButton>
-                  <JaliButton to="/register/business" variant="secondary" right={<img className="w-6" src="/images/briefcase.png" alt="" />}>
+                  <JaliButton
+                    to="/register/business"
+                    variant="secondary"
+                    right={
+                      <img className="w-6" src="/images/briefcase.png" alt="" />
+                    }
+                  >
                     Register as a Brand
                   </JaliButton>
                 </div>
@@ -124,40 +214,32 @@ export default function Hero() {
             </div>
           </div>
         </div>
+
+        {/* Subtle top shade overlay (kept) */}
         <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/5 to-transparent" />
-        {/* ORBIT CANVAS (behind everything) */}
+
+        {/* RAILS CANVAS (behind content) */}
         <div className="absolute inset-0 z-0 pointer-events-none">
-          {/* BIG orbit stage: make it taller than the hero so only arcs show */}
-          <div className="absolute inset-x-0 top-[-45%] h-[180%]">
-            {/* tracks */}
-            <OrbitTrack spec={TRACKS[0]} sources={six} />
-            <OrbitTrack spec={TRACKS[1]} sources={five} />
-            <OrbitTrack spec={TRACKS[2]} sources={four} />
-            <OrbitTrack spec={TRACKS[3]} sources={three} />
+          {/* taller stage so avatars can enter/exit smoothly */}
+          <div className="absolute inset-x-0 top-[-35%] h-[170%]">
+            {rails.map((r, i) => (
+              <Rail key={i} spec={r} sources={pick(r.count)} />
+            ))}
           </div>
         </div>
-
-        {/* CONTENT + BLURRED OVERLAY (avatars pass behind this) */}
-
-        {/* extra subtle shade */}
       </div>
 
-      {/* KEYFRAMES */}
+      {/* small responsive tweaks */}
       <style>{`
-        @keyframes orbit { from { transform: translate(-50%, -50%) rotate(0deg); }
-                           to   { transform: translate(-50%, -50%) rotate(360deg); } }
-        @keyframes orbit-rev { from { transform: translate(-50%, -50%) rotate(0deg); }
-                               to   { transform: translate(-50%, -50%) rotate(-360deg); } }
-
-        /* responsive: compress radii so more of each circle hides, preserving the half-arc vibe */
         @media (max-width: 1024px) {
-          .absolute.left-1\\/2.top-1\\/2[style*="width:"] { /* track container */
-            transform: translate(-50%, -50%) scale(0.82);
-          }
+          /* nudge rails inward a bit on medium screens */
+          .rail-tighten {}
         }
         @media (max-width: 640px) {
-          .absolute.left-1\\/2.top-1\\/2[style*="width:"] {
-            transform: translate(-50%, -50%) scale(0.68);
+          /* scale down the whole canvas so it still looks airy */
+          .absolute.inset-x-0.top-\\[-35%\\].h-\\[170%\\] {
+            transform: scale(0.85);
+            transform-origin: center top;
           }
         }
       `}</style>

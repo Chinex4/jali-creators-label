@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import CountrySelect from "./CountrySelect";
 import NicheSelect from "./NicheSelect";
 import JaliButton from "../../components/ui/JaliButton";
+import toast from "react-hot-toast";
 
 type Props = {
   kind: "creator" | "business";
@@ -14,7 +15,7 @@ export default function RegisterForm({ kind, titleBadge, onSubmitApi }: Props) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // local state for controlled selects
+  // local state for controlled Headless UI selects
   const [country, setCountry] = useState("");
   const [niche, setNiche] = useState("");
 
@@ -28,24 +29,24 @@ export default function RegisterForm({ kind, titleBadge, onSubmitApi }: Props) {
 
     const fd = new FormData(form);
     const payload = Object.fromEntries(fd.entries());
+    // Ensure we pass the controlled values (mirrors the hidden inputs too)
     (payload as any).country = country;
     (payload as any).niche = niche;
     (payload as any).kind = kind;
 
     try {
       setLoading(true);
-      // if you pass a real API handler, call it; else simulate
       if (onSubmitApi) {
         await onSubmitApi(payload);
       } else {
         await new Promise((r) => setTimeout(r, 900));
       }
-      alert("Registration submitted ✅ We’ll get back to you shortly.");
+      toast.success("Registration submitted ✅ We’ll get back to you shortly.");
       form.reset();
       setCountry("");
       setNiche("");
-    } catch (err) {
-      alert("Oops, failed to submit. Please try again.");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Oops, failed to submit. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -116,13 +117,9 @@ export default function RegisterForm({ kind, titleBadge, onSubmitApi }: Props) {
             />
           </div>
 
-          <CountrySelect
-            id="country"
-            required
-            value={country}
-            onChange={setCountry}
-          />
-          <NicheSelect id="niche" required value={niche} onChange={setNiche} />
+          {/* Headless UI selects (with hidden inputs inside) */}
+          <CountrySelect id="country" required value={country} onChange={(v) => setCountry(v ?? "")} />
+          <NicheSelect id="niche" required value={niche} onChange={(v) => setNiche(v ?? "")} />
 
           {/* Socials */}
           <input
