@@ -17,7 +17,7 @@ type RailSpec = {
 
 function Avatar({
   src,
-  size = 48,
+  size = 28,
   delay = 0,
 }: {
   src: string;
