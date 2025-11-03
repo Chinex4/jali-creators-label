@@ -26,7 +26,7 @@ export default function Navbar() {
         {/* Center: Segmented control (desktop) */}
         <nav className="hidden md:block">
           <LayoutGroup id="nav">
-            <ul className="relative flex items-center gap-2 rounded-full bg-[#EFE8E1] px-3 py-2">
+            <ul className="relative flex items-center gap-2 rounded-full bg-[#EFE8E1] px-3 py-4">
               {TABS.map((t) => {
                 const active =
                   pathname === t.to ||
@@ -35,7 +35,7 @@ export default function Navbar() {
                   <li key={t.to} className="relative">
                     <NavLink
                       to={t.to}
-                      className="relative z-10 rounded-full px-6 py-2 text-base font-extrabold text-primary"
+                      className="relative z-10 rounded-full px-6 py-4 text-base font-extrabold text-primary"
                     >
                       {active && (
                         <motion.span
@@ -64,7 +64,7 @@ export default function Navbar() {
         {/* Right: CTA */}
         <Link
           to="/contact"
-          className="hidden md:inline-flex rounded-full bg-primary text-white font-extrabold px-6 py-3"
+          className="hidden md:inline-flex rounded-full bg-primary text-white font-extrabold px-6 py-4"
         >
           Chat With Us{" "}
           <span className="ml-2 text-xl">

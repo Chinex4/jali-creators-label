@@ -25,7 +25,7 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & Common;
 type Props = ButtonProps & LinkProps;
 
 const baseSize = (large?: boolean) =>
-  large ? "px-10 py-6 text-3xl" : "px-6 py-3 text-base";
+  large ? "px-10 py-6 text-3xl" : "px-6 py-4 text-base";
 
 function classes(
   variant: Variants = "primary",
@@ -43,7 +43,7 @@ function classes(
   if (variant === "secondary") {
     return cn(
       shared,
-      "bg-transparent border-[3px] border-b-[6px] border-primary text-primary",
+      "bg-transparent border-[2px] border-b-[4px] py-3 border-primary text-primary",
       "hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(0,0,0,0.08)]",
       "active:translate-y-0 active:shadow-none",
       "focus-visible:ring-4 focus-visible:ring-primary/20",
@@ -51,8 +51,10 @@ function classes(
     );
   }
 
+  // ⬇️ Only primary gets extra vertical padding
   return cn(
     shared,
+    large ? "py-7" : "py-5",
     "bg-primary text-white",
     "hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(40,25,0,0.25)]",
     "active:translate-y-0 active:shadow-[0_8px_16px_rgba(40,25,0,0.18)]",
@@ -60,6 +62,7 @@ function classes(
     className
   );
 }
+
 
 function RightWrap({ children }: { children?: ReactNode }) {
   if (!children) return null;

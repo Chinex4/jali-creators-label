@@ -19,7 +19,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+    <section id="contact" className="mx-auto max-w-6xl px-4 py-12 md:py-16">
       <div className="grid gap-10 md:gap-16 md:grid-cols-2 items-start">
         {/* Left copy */}
         <div>

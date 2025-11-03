@@ -24,6 +24,7 @@ const FAQS: Faq[] = [
     q: "Can small businesses or startups register?",
     a: "Yes. Many of our best partnerships start with SMEs and startups. We’ll help you find the right creators for your goals.",
   },
+  
 ];
 
 function PlusIcon({ open }: { open: boolean }) {
@@ -87,24 +88,21 @@ function FaqItem({
 
 export default function FAQ() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-14 md:py-20">
-      <h2
-        className="text-center font-extrabold text-primary
-                     tracking-wide font-dela leading-tight
-                     text-3xl sm:text-4xl md:text-5xl"
-      >
-        Frequently Asked Questions
-      </h2>
+    // in FAQ()
+<section className="mx-auto max-w-6xl px-4 py-14 md:py-20">
+  <h2 className="text-center font-extrabold text-primary tracking-wide font-dela leading-tight text-3xl sm:text-4xl md:text-5xl">
+    Frequently Asked Questions
+  </h2>
 
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-        {/* First item open by default to match your mock */}
-        <FaqItem item={FAQS[0]} defaultOpen />
-
-        {/* Keep the grid balanced: map rest, preserving order */}
-        {FAQS.slice(1).map((it, idx) => (
-          <FaqItem key={idx} item={it} />
-        ))}
+  {/* Masonry columns instead of grid */}
+  <div className="mt-10 columns-1 md:columns-2 md:gap-6 gap-5 [column-fill:balance]">
+    {FAQS.map((it, idx) => (
+      <div key={idx} className="mb-5 md:mb-6 break-inside-avoid">
+        <FaqItem item={it} defaultOpen={idx === 0} />
       </div>
-    </section>
+    ))}
+  </div>
+</section>
+
   );
 }

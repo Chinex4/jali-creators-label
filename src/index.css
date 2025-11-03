@@ -19,12 +19,42 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 @keyframes orbit {
-  from { transform: rotate(0deg);   }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @keyframes orbit-rev {
-  from { transform: rotate(360deg); }
-  to   { transform: rotate(0deg);   }
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.fuzzy-plate {
+  /* tint */
+  background: rgba(242, 237, 231, 0.86);
+  /* blur what’s behind */
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  /* huge rounding (not really visible after mask, but helps) */
+  border-radius: 48px;
+
+  /* FEATHER THE EDGES COMPLETELY */
+  /* center-weighted radial mask that fades to 0 at edges */
+  mask-image: radial-gradient(
+    closest-side at 50% 50%,
+    rgba(0, 0, 0, 0.95) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    closest-side at 50% 50%,
+    rgba(0, 0, 0, 0.95) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }

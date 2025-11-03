@@ -17,7 +17,7 @@ export default function CreatorRegister() {
   return (
     <RegisterForm
       kind="creator"
-      titleBadge="Join as a Creator 🕶️"
+      titleBadge="Join as a Creator"
       onSubmitApi={submitToApi}
     />
   );

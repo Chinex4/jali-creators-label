@@ -6,6 +6,7 @@ import About from "./pages/About";
 import Resources from "./pages/Resources";
 import CreatorRegister from "./pages/register/CreatorRegister";
 import BusinessRegister from "./pages/register/BusinessRegister";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/resources" element={<Resources />} />
           <Route path="/register/creator" element={<CreatorRegister />} />
           <Route path="/register/business" element={<BusinessRegister />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />

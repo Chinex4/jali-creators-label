@@ -1,10 +1,12 @@
+import ComingSoon from "../components/ComingSoon";
+
 export default function About() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-20">
-      <h1 className="font-display text-4xl md:text-6xl mb-4">About Us</h1>
-      <p className="text-primary/80 max-w-3xl">
-        We connect creators and brands through a curated label experience.
-      </p>
-    </section>
+    <ComingSoon
+      title="About Jali is in development"
+      subtitle="We’re documenting our story, mission, and the people behind the Label."
+      eta="Launching shortly"
+      progress={65}
+    />
   );
 }

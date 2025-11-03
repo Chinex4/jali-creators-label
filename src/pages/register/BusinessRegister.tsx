@@ -17,7 +17,7 @@ export default function BusinessRegister() {
   return (
     <RegisterForm
       kind="business"
-      titleBadge="Register as a Brand 💼"
+      titleBadge="Register as a Brand"
       onSubmitApi={submitToApi}
     />
   );

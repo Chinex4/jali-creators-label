@@ -51,6 +51,17 @@ export default function RegisterForm({ kind, titleBadge, onSubmitApi }: Props) {
     }
   };
 
+  // pick the correct icon from /public/images
+  const ICONS = {
+    creator: "/images/emoji.png",
+    business: "/images/briefcase.png",
+  } as const;
+
+  const iconSrc = ICONS[kind];
+  const RightEmoji = (
+    <img src={iconSrc} alt="" className="h-6 w-6 object-contain" />
+  );
+
   return (
     <section className="mx-auto max-w-3xl px-4 py-10">
       <motion.div
@@ -59,11 +70,15 @@ export default function RegisterForm({ kind, titleBadge, onSubmitApi }: Props) {
         transition={{ duration: 0.4 }}
         className="rounded-[28px] md:rounded-[36px] bg-[#F7F2EC] p-6 md:p-10 shadow"
       >
-        {/* Badge */}
+        {/* Badge → static JaliButton */}
         <div className="mb-5">
-          <span className="inline-flex items-center gap-2 rounded-full bg-primary text-white px-4 py-2 text-sm font-extrabold">
+          <JaliButton
+            type="button"
+            className="pointer-events-none select-none" // no action
+            right={RightEmoji}
+          >
             {titleBadge}
-          </span>
+          </JaliButton>
         </div>
 
         <h2 className="font-extrabold text-primary text-2xl md:text-3xl leading-tight tracking-tight mb-6">

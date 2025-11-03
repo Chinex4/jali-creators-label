@@ -1,253 +1,166 @@
 import { motion } from "framer-motion";
 import JaliButton from "../ui/JaliButton";
 
-const AVATARS = Array.from(
-  { length: 18 },
-  (_, i) => `/images/avatars/${i + 1}.png`
-);
+const AVATARS = Array.from({ length: 18 }, (_, i) => `/images/avatars/${i + 1}.png`);
 
-type OrbitAvatarProps = {
-  src: string;
-  radius: number;
-  size?: number;
-  duration?: number;
-  delay?: number;
-  reverse?: boolean;
+type TrackSpec = {
+  radius: number;        // px from center
+  count: number;         // avatars on this track
+  duration: number;      // secs per full revolution
+  reverse?: boolean;     // anticlockwise if true
+  size: number;          // avatar size
+  wobbleDelay?: number;  // start offset for gentle bob
 };
 
-function OrbitAvatar({
-  src,
-  radius,
-  size = 48,
-  duration = 40,
-  delay = 0,
-  reverse,
-}: OrbitAvatarProps) {
+const TRACKS: TrackSpec[] = [
+  { radius: 380, count: 6, duration: 56, reverse: false, size: 56, wobbleDelay: 0.0 }, // 1st: CW
+  { radius: 520, count: 5, duration: 64, reverse: true,  size: 52, wobbleDelay: 0.3 }, // 2nd: CCW
+  { radius: 660, count: 4, duration: 58, reverse: false, size: 52, wobbleDelay: 0.6 }, // 3rd: CW
+  { radius: 800, count: 3, duration: 70, reverse: true,  size: 48, wobbleDelay: 0.9 }, // 4th: CCW
+];
+
+function Avatar({ src, size = 48, delay = 0 }: { src: string; size?: number; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ y: 0 }}
+      animate={{ y: [0, -6, 0] }}
+      transition={{ repeat: Infinity, duration: 3.2, ease: "easeInOut", delay }}
+      className="rounded-full ring-2 ring-white/70 shadow-md bg-white overflow-hidden"
+      style={{ width: size, height: size }}
+    >
+      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+    </motion.div>
+  );
+}
+
+/**
+ * A rotating track (big square, centered) with avatars positioned on a circle.
+ * We rotate the whole track for continuous orbit. Each avatar is counter-rotated
+ * to stay upright while moving.
+ */
+function OrbitTrack({ spec, sources }: { spec: TrackSpec; sources: string[] }) {
+  const step = 360 / spec.count;
+
   return (
     <div
-      className="absolute inset-0 pointer-events-none flex items-center justify-center"
+      className="absolute left-1/2 top-1/2"
       style={{
-        animation: `${
-          reverse ? "orbit-rev" : "orbit"
-        } ${duration}s linear infinite`,
-        animationDelay: `${delay}s`,
+        width: spec.radius * 2,
+        height: spec.radius * 2,
+        transform: "translate(-50%, -50%)",
+        animation: `${spec.reverse ? "orbit-rev" : "orbit"} ${spec.duration}s linear infinite`,
+        transformOrigin: "center",
       }}
     >
-      <div style={{ transform: `translateX(${radius}px)` }}>
-        <motion.div
-          initial={{ y: 0 }}
-          animate={{ y: [0, -6, 0] }}
-          transition={{
-            repeat: Infinity,
-            duration: 3.2,
-            delay,
-            ease: "easeInOut",
-          }}
-          className="rounded-full ring-2 ring-white/60 shadow-md overflow-hidden bg-white"
-          style={{ width: size, height: size }}
-        >
-          <img
-            src={src}
-            alt=""
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        </motion.div>
-      </div>
+      {/* ring line */}
+      <div
+        className="absolute inset-0 rounded-full border border-primary/10"
+        aria-hidden
+      />
+
+      {/* avatars */}
+      {sources.map((src, i) => {
+        const angle = i * step; // degrees
+        return (
+          <div
+            key={src + i}
+            className="absolute left-1/2 top-1/2"
+            style={{
+              transform: `rotate(${angle}deg) translate(${spec.radius}px) rotate(${-angle}deg)`,
+              transformOrigin: "0 0",
+              willChange: "transform",
+            }}
+          >
+            <Avatar src={src} size={spec.size} delay={(i * 0.12) + (spec.wobbleDelay ?? 0)} />
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-type RingProps = { scale: number };
-
-function Ring({ scale }: RingProps) {
-  return (
-    <div
-      className="absolute inset-0 rounded-full border border-primary/10"
-      style={{ transform: `scale(${scale})` }}
-    />
-  );
-}
-
 export default function Hero() {
+  // slice the first 18 avatars across 6/5/4/3
+  const [six, five, four, three] = [
+    AVATARS.slice(0, 6),
+    AVATARS.slice(6, 11),
+    AVATARS.slice(11, 15),
+    AVATARS.slice(15, 18),
+  ];
+
   return (
     <section className="mx-auto max-w-6xl px-4 pt-8 md:pt-12">
       <div className="relative overflow-hidden rounded-4xl md:rounded-[48px] bg-[#F2EDE7] px-5 md:px-12 py-10 md:py-12">
-        <img
-          src="/images/red.png"
-          alt=""
-          className="pointer-events-none select-none absolute -top-6 -right-4 w-24 md:w-52"
-          loading="lazy"
-        />
-        <img
-          src="/images/yellow.png"
-          alt=""
-          className="pointer-events-none select-none absolute bottom-0 md:-bottom-10 -left-4 md:-left-14 w-24 md:w-52"
-          loading="lazy"
-        />
-        {/* Decorative orbit canvas */}
-        <div className="absolute inset-0">
-          {/* fix class: bg-gradient-to-b (not bg-linear-to-b) and subtlety */}
-          <div className="absolute inset-0 bg-linear-to-b from-black/5 to-transparent pointer-events-none" />
-          <Ring scale={0.28} />
-          <Ring scale={0.48} />
-          <Ring scale={0.68} />
-          <Ring scale={0.88} />
-          <Ring scale={1.1} />
+        {/* decor corners */}
+        <img src="/images/red.png" alt="" className="pointer-events-none select-none absolute -top-6 -right-4 w-24 md:w-52" />
+        <img src="/images/yellow.png" alt="" className="pointer-events-none select-none absolute bottom-0 md:-bottom-10 -left-4 md:-left-14 w-24 md:w-52" />
+
+        <div className="relative z-20">
+          <div className="mx-auto max-w-4xl">
+            {/* overlay plate */}
+            <div className="relative">
+              <div className="fuzzy-plate pointer-events-none absolute -inset-8 -z-10" />
+              <div className="text-center">
+                <h1 className="font-dela font-bold text-primary tracking-wider
+                                text-4xl leading-tight md:text-4xl md:leading-[1.05] lg:text-6xl">
+                  <span className="block">We Make Creators</span>
+                  <span className="block">&amp; Brands Grow Together</span>
+                </h1>
+
+                <p className="mt-5 md:mt-6 text-primary/70 text-lg md:text-2xl">
+                  Jali Creators Label built to empower{" "}
+                  <br className="hidden md:block" /> collaboration, creativity, and fair growth.
+                </p>
+
+                <div className="mt-8 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
+                  <JaliButton to="/register/creator" variant="primary" right={<img className="w-6" src="/images/emoji.png" alt="" />}>
+                    Join as a Creator
+                  </JaliButton>
+                  <JaliButton to="/register/business" variant="secondary" right={<img className="w-6" src="/images/briefcase.png" alt="" />}>
+                    Register as a Brand
+                  </JaliButton>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* Content */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto md:mt-12">
-          <h1
-            className="font-dela font-extrabold text-primary tracking-wider
-                         text-4xl leading-tight
-                         md:text-4xl md:leading-[1.05]
-                         lg:text-6xl"
-          >
-            <span className="block">We Make Creators</span>
-            <span className="block">&amp; Brands Grow Together</span>
-          </h1>
-
-          <p className="mt-5 md:mt-6 text-primary/70 text-lg md:text-2xl">
-            Jali Creators Label built to empower collaboration, creativity, and
-            fair growth.
-          </p>
-
-          <div className="mt-8 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
-            <JaliButton
-              to="/register/creator"
-              variant="primary"
-              right={
-                <span>
-                  <img className="w-6" src="/images/emoji.png" alt="" />
-                </span>
-              }
-            >
-              Join as a Creator
-            </JaliButton>
-            <JaliButton
-              to="/register/business"
-              variant="secondary"
-              right={
-                <span>
-                  <img className="w-6" src="/images/briefcase.png" alt="" />
-                </span>
-              }
-            >
-              Register as a Brand
-            </JaliButton>
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/5 to-transparent" />
+        {/* ORBIT CANVAS (behind everything) */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {/* BIG orbit stage: make it taller than the hero so only arcs show */}
+          <div className="absolute inset-x-0 top-[-45%] h-[180%]">
+            {/* tracks */}
+            <OrbitTrack spec={TRACKS[0]} sources={six} />
+            <OrbitTrack spec={TRACKS[1]} sources={five} />
+            <OrbitTrack spec={TRACKS[2]} sources={four} />
+            <OrbitTrack spec={TRACKS[3]} sources={three} />
           </div>
         </div>
 
-        {/* Reserve less vertical space than before */}
-        {/* <div className="relative z-0 aspect-28/9 md:aspect-32/9"></div> */}
+        {/* CONTENT + BLURRED OVERLAY (avatars pass behind this) */}
 
-        {/* Orbiting avatars */}
-        <div className="pointer-events-none absolute inset-0 hero-orbits">
-          {/* Use different radii to sprinkle the avatars across rings */}
-          <OrbitAvatar
-            src={AVATARS[0]}
-            radius={140}
-            size={52}
-            duration={52}
-            delay={0.2}
-          />
-          <OrbitAvatar
-            src={AVATARS[1]}
-            radius={180}
-            size={48}
-            duration={58}
-            delay={1.1}
-            reverse
-          />
-          <OrbitAvatar
-            src={AVATARS[2]}
-            radius={220}
-            size={44}
-            duration={46}
-            delay={0.6}
-          />
-          <OrbitAvatar
-            src={AVATARS[3]}
-            radius={260}
-            size={50}
-            duration={64}
-            delay={0.9}
-            reverse
-          />
-          <OrbitAvatar
-            src={AVATARS[4]}
-            radius={300}
-            size={46}
-            duration={54}
-            delay={0.4}
-          />
-          <OrbitAvatar
-            src={AVATARS[5]}
-            radius={340}
-            size={42}
-            duration={70}
-            delay={1.7}
-            reverse
-          />
-          <OrbitAvatar
-            src={AVATARS[6]}
-            radius={380}
-            size={48}
-            duration={60}
-            delay={1.3}
-          />
-          <OrbitAvatar
-            src={AVATARS[7]}
-            radius={420}
-            size={44}
-            duration={66}
-            delay={0.8}
-            reverse
-          />
-          <OrbitAvatar
-            src={AVATARS[8]}
-            radius={460}
-            size={46}
-            duration={72}
-            delay={1.9}
-          />
-          <OrbitAvatar
-            src={AVATARS[9]}
-            radius={500}
-            size={42}
-            duration={62}
-            delay={0.5}
-            reverse
-          />
-          <OrbitAvatar
-            src={AVATARS[10]}
-            radius={540}
-            size={44}
-            duration={68}
-            delay={1.5}
-          />
-          <OrbitAvatar
-            src={AVATARS[11]}
-            radius={580}
-            size={46}
-            duration={76}
-            delay={1.0}
-            reverse
-          />
-        </div>
-
-        {/* Responsive tuning using CSS var instead of that long class selector */}
-        <style>{`
-          .hero-orbits [data-orbit] > div > div { transform: translateX(var(--r)); }
-          @media (max-width: 1024px) {
-            .hero-orbits [data-orbit] > div > div { transform: translateX(calc(var(--r) * .62)); }
-          }
-          @media (max-width: 640px) {
-            .hero-orbits [data-orbit] > div > div { transform: translateX(calc(var(--r) * .50)); }
-          }
-        `}</style>
+        {/* extra subtle shade */}
       </div>
+
+      {/* KEYFRAMES */}
+      <style>{`
+        @keyframes orbit { from { transform: translate(-50%, -50%) rotate(0deg); }
+                           to   { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes orbit-rev { from { transform: translate(-50%, -50%) rotate(0deg); }
+                               to   { transform: translate(-50%, -50%) rotate(-360deg); } }
+
+        /* responsive: compress radii so more of each circle hides, preserving the half-arc vibe */
+        @media (max-width: 1024px) {
+          .absolute.left-1\\/2.top-1\\/2[style*="width:"] { /* track container */
+            transform: translate(-50%, -50%) scale(0.82);
+          }
+        }
+        @media (max-width: 640px) {
+          .absolute.left-1\\/2.top-1\\/2[style*="width:"] {
+            transform: translate(-50%, -50%) scale(0.68);
+          }
+        }
+      `}</style>
     </section>
   );
 }

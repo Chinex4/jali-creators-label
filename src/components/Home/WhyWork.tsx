@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 
 type CardProps = {
   bg: string; // tailwind class for bg color
@@ -7,16 +8,29 @@ type CardProps = {
   body: string;
 };
 
-function PillImage({ src, alt }: { src: string; alt: string }) {
+function PillImage({
+  src,
+  alt,
+  children,
+}: {
+  src: string;
+  alt: string;
+  children?: ReactNode;
+}) {
   return (
-    <div className="relative h-20 md:h-24 w-full overflow-hidden rounded-2xl">
+    <div className="relative h-24 md:h-28 w-full overflow-hidden rounded-2xl">
       <img
         src={src}
         alt={alt}
         className="absolute inset-0 h-full w-full object-cover"
         loading="lazy"
       />
+      {/* overlay */}
       <div className="absolute inset-0 bg-black/45" />
+      {/* content over the overlay */}
+      <div className="absolute inset-0 px-4 md:px-6 flex items-center">
+        {children}
+      </div>
     </div>
   );
 }
@@ -33,16 +47,16 @@ function InfoCard({ bg, image, title, body }: CardProps) {
       ].join(" ")}
     >
       <div className="max-w-[520px]">
-        <PillImage src={image} alt="" />
+        <PillImage src={image} alt="">
+          <h3 className="font-extrabold leading-tight text-white text-2xl md:text-3xl font-dela drop-shadow-[0_2px_2px_rgba(0,0,0,0.35)]">
+            {title.split("\n").map((line, i) => (
+              <span key={i} className="block">
+                {line}
+              </span>
+            ))}
+          </h3>
+        </PillImage>
       </div>
-
-      <h3 className="font-extrabold leading-tight text-white text-2xl md:text-3xl font-dela">
-        {title.split("\n").map((line, i) => (
-          <span key={i} className="block">
-            {line}
-          </span>
-        ))}
-      </h3>
 
       <p className="text-white/95 text-base md:text-lg leading-relaxed">
         {body}
@@ -56,16 +70,15 @@ export default function WhyWork() {
     <section className="mx-auto max-w-6xl px-4 py-10 md:py-14">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         <InfoCard
-          bg="bg-[#187DD0]" // JALI blue
+          bg="bg-[#187DD0]"
           image="/images/pic1.png"
           title={"Why Work With\nOur Creators"}
           body={
-            "Our creators are not just content makers, they’re culture shapers and storytellers trained by the Jali Creator Label.\n\nEach one is vetted, trained, and supported to deliver stories that inspire, influence, and convert."
+            "Our creators are not just content makers, they’re culture shapers and storytellers trained by the Jali Creator Label.\n\n\nEach one is vetted, trained, and supported to deliver stories that inspire, influence, and convert."
           }
         />
-
         <InfoCard
-          bg="bg-[#EB8715]" // JALI orange
+          bg="bg-[#EB8715]"
           image="/images/pic2.png"
           title={"Why Work With\nOur Businesses"}
           body={
