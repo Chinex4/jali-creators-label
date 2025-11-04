@@ -43,8 +43,8 @@ function Avatar({
 }
 
 function Rail({ spec, sources }: { spec: RailSpec; sources: string[] }) {
-  const start = spec.direction === "down" ? "-12%" : "112%";
-  const end = spec.direction === "down" ? "112%" : "-12%";
+  // const start = spec.direction === "down" ? "-12%" : "112%";
+  // const end = spec.direction === "down" ? "112%" : "-12%";
 
   return (
     <div
