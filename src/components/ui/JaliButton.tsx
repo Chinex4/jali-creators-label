@@ -54,7 +54,7 @@ function classes(
   // ⬇️ Only primary gets extra vertical padding
   return cn(
     shared,
-    large ? "py-7" : "py-3",
+    large ? "py-7" : "py-4",
     "bg-primary text-[#F2EDE7]",
     "hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(40,25,0,0.25)]",
     "active:translate-y-0 active:shadow-[0_8px_16px_rgba(40,25,0,0.18)]",
