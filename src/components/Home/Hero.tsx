@@ -202,12 +202,12 @@ export default function Hero() {
         <img
           src="/images/red.png"
           alt=""
-          className="pointer-events-none select-none absolute -top-6 -right-4 w-24 md:w-52"
+          className="pointer-events-none select-none absolute -top-6 -right-4 w-24 md:w-52 z-40"
         />
         <img
           src="/images/yellow.png"
           alt=""
-          className="pointer-events-none select-none absolute bottom-0 md:-bottom-10 -left-4 md:-left-14 w-24 md:w-52"
+          className="pointer-events-none select-none absolute bottom-0 md:-bottom-10 -left-4 md:-left-14 w-24 md:w-52 z-40"
         />
 
         {/* CONTENT */}
