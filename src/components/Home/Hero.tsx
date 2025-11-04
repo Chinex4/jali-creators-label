@@ -211,7 +211,7 @@ export default function Hero() {
         />
 
         {/* CONTENT */}
-        <div className="relative z-20">
+        <div className="relative z-20 mt-4">
           <div className="mx-auto max-w-4xl">
             <div className="relative">
               <div className="fuzzy-plate pointer-events-none absolute -inset-8 -z-10" />
@@ -224,7 +224,7 @@ export default function Hero() {
                   <span className="block">&amp; Brands Grow Together</span>
                 </h1>
 
-                <p className="mt-5 md:mt-6 text-primary/70 text-[15px] md:text-2xl">
+                <p className="mt-3 md:mt-6 text-primary/70 text-[15px] md:text-2xl">
                   Jali Creators Label built to empower{" "}
                   <br className="hidden md:block" /> collaboration, creativity,
                   and fair growth.

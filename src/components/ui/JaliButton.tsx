@@ -25,7 +25,7 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & Common;
 type Props = ButtonProps & LinkProps;
 
 const baseSize = (large?: boolean) =>
-  large ? "px-6 py-3 text-lg" : "px-4 py-2 text-xs md:text-lg";
+  large ? "px-6 py-3 text-lg" : "px-4 py-3 text-xs md:text-lg";
 
 function classes(
   variant: Variants = "primary",
