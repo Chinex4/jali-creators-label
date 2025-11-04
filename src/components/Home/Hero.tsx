@@ -57,15 +57,18 @@ function Rail({ spec, sources }: { spec: RailSpec; sources: string[] }) {
 
       {/* avatars on this rail */}
       {sources.map((src, i) => {
-        const baseDelay = i * (spec.duration / sources.length) * 0.65; // spreads them along the path
+        const baseDelay = i * (spec.duration / sources.length) * 0.65;
         const size = spec.size;
+        const start = spec.direction === "down" ? "-12%" : "112%";
+        const end = spec.direction === "down" ? "112%" : "-12%";
+
         return (
           <motion.div
             key={src + i}
-            className="absolute left-1/2 -translate-x-1/2 will-change-transform"
+            className="absolute left-1/2 -translate-x-1/2 will-change-[top]"
             style={{ width: size, height: size }}
-            initial={{ y: start }}
-            animate={{ y: [start, end] }}
+            initial={{ top: start }}
+            animate={{ top: [start, end] }}
             transition={{
               repeat: Infinity,
               repeatType: "loop",
