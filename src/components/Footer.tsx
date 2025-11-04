@@ -26,6 +26,7 @@ export default function Footer() {
                   <img className="w-6" src="/images/emoji.png" alt="" />
                 </span>
               }
+              to="/register/creator"
             >
               Join as a Creator
             </JaliButton>
@@ -36,6 +37,7 @@ export default function Footer() {
                   <img className="w-6" src="/images/briefcase.png" alt="" />
 
               </span>}
+              to="/register/business"
             >
               Register as a Brand
             </JaliButton>

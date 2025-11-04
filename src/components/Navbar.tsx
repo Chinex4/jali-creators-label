@@ -49,7 +49,7 @@ export default function Navbar() {
                         />
                       )}
                       <span
-                        className={active ? "text-white" : "text-primary/70"}
+                        className={active ? "text-[#F2EDE7]" : "text-primary/70"}
                       >
                         {t.label}
                       </span>
@@ -64,7 +64,7 @@ export default function Navbar() {
         {/* Right: CTA */}
         <Link
           to="/contact"
-          className="hidden md:inline-flex rounded-full bg-primary text-white font-extrabold px-6 py-4"
+          className="hidden md:inline-flex rounded-full bg-primary text-[#F2EDE7] font-extrabold px-6 py-4"
         >
           Chat With Us{" "}
           <span className="ml-2 text-xl">
@@ -128,7 +128,7 @@ export default function Navbar() {
                     <span
                       className={
                         active
-                          ? "relative z-10 text-white"
+                          ? "relative z-10 text-[#F2EDE7]"
                           : "relative z-10 text-primary/70"
                       }
                     >
@@ -144,7 +144,7 @@ export default function Navbar() {
         <div className="px-4 pb-4">
           <Link
             to="/contact"
-            className="flex justify-center items-center text-center rounded-full bg-primary text-white font-extrabold px-6 py-5"
+            className="flex justify-center items-center text-center rounded-full bg-primary text-[#F2EDE7] font-extrabold px-6 py-5"
           >
             <span>Chat With Us</span>
             <span className="ml-2 text-xl">

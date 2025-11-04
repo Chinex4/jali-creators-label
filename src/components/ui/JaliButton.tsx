@@ -25,7 +25,7 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & Common;
 type Props = ButtonProps & LinkProps;
 
 const baseSize = (large?: boolean) =>
-  large ? "px-10 py-6 text-3xl" : "px-6 py-4 text-base";
+  large ? "px-6 py-3 text-lg" : "px-4 py-2 text-xs md:text-lg";
 
 function classes(
   variant: Variants = "primary",
@@ -43,7 +43,7 @@ function classes(
   if (variant === "secondary") {
     return cn(
       shared,
-      "bg-[#F2EDE7] border-[2px] border-b-[4px] py-3 border-primary text-primary",
+      "bg-[#F2EDE7] border-[2px] border-b-[4px] border-primary text-primary",
       "hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(0,0,0,0.08)]",
       "active:translate-y-0 active:shadow-none",
       "focus-visible:ring-4 focus-visible:ring-primary/20",
@@ -54,8 +54,8 @@ function classes(
   // ⬇️ Only primary gets extra vertical padding
   return cn(
     shared,
-    large ? "py-7" : "py-5",
-    "bg-primary text-white",
+    large ? "py-7" : "py-3",
+    "bg-primary text-[#F2EDE7]",
     "hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(40,25,0,0.25)]",
     "active:translate-y-0 active:shadow-[0_8px_16px_rgba(40,25,0,0.18)]",
     "focus-visible:ring-4 focus-visible:ring-primary/30",

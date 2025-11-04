@@ -44,27 +44,27 @@ function BenefitCard({
       />
 
       {/* Layout: left text, right image space */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-[1fr_420px] gap-6 md:gap-10 p-6 sm:p-8 md:p-10 lg:p-12 text-white">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-[1fr_420px] gap-6 md:gap-10 p-6 sm:p-8 md:p-10 lg:p-12 text-[#F2EDE7]">
         {/* TEXT */}
         <div>
           {/* Label pill */}
-          <span className="inline-block rounded-full bg-white/15 text-white px-3 py-1 text-[11px] md:text-xs font-extrabold tracking-wide">
+          <span className="inline-block rounded-full bg-white/15 text-[#F2EDE7] px-3 py-1 text-[11px] md:text-xs font-extrabold tracking-wide">
             {label.toUpperCase()}
           </span>
 
           <h3
-            className="mt-4 font-extrabold leading-tight text-white font-dela
+            className="mt-4 font-extrabold leading-tight text-[#F2EDE7] font-dela
                          text-2xl sm:text-3xl md:text-4xl"
           >
             {title}
           </h3>
 
-          <p className="mt-3 max-w-2xl text-white/95 text-base sm:text-lg leading-relaxed">
+          <p className="mt-3 max-w-2xl text-[#F2EDE7]/95 text-base sm:text-lg leading-relaxed">
             {blurb}
           </p>
 
           {/* Bullets in 2 columns on sm+ */}
-          <ul className="mt-5 grid gap-x-10 gap-y-2 text-white text-base sm:text-lg leading-relaxed sm:grid-cols-2">
+          <ul className="mt-5 grid gap-x-10 gap-y-2 text-[#F2EDE7] text-base sm:text-lg leading-relaxed sm:grid-cols-2">
             {bullets.map((b, i) => (
               <li key={i} className="relative pl-5">
                 <span className="absolute left-0 top-2 block h-1.5 w-1.5 rounded-full bg-white" />

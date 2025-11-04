@@ -7,11 +7,13 @@ import Resources from "./pages/Resources";
 import CreatorRegister from "./pages/register/CreatorRegister";
 import BusinessRegister from "./pages/register/BusinessRegister";
 import NotFound from "./pages/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF7F2] text-primary">
       <Navbar />
+          <ScrollToTop />
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />

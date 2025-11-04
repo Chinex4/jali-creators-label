@@ -41,14 +41,14 @@ function InfoCard({ bg, image, title, body }: CardProps) {
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
       className={[
-        "rounded-[36px] p-6 md:p-8 text-white shadow",
+        "rounded-[36px] p-6 md:p-8 text-[#F2EDE7] shadow",
         "flex flex-col gap-5 md:gap-6",
         bg,
       ].join(" ")}
     >
       <div className="max-w-[520px]">
         <PillImage src={image} alt="">
-          <h3 className="font-extrabold leading-tight text-white text-2xl md:text-3xl font-dela drop-shadow-[0_2px_2px_rgba(0,0,0,0.35)]">
+          <h3 className="font-extrabold leading-tight text-[#F2EDE7] text-2xl md:text-3xl font-dela drop-shadow-[0_2px_2px_rgba(0,0,0,0.35)]">
             {title.split("\n").map((line, i) => (
               <span key={i} className="block">
                 {line}
@@ -58,7 +58,7 @@ function InfoCard({ bg, image, title, body }: CardProps) {
         </PillImage>
       </div>
 
-      <p className="text-white/95 text-base md:text-lg leading-relaxed">
+      <p className="text-[#F2EDE7]/95 text-base md:text-lg leading-relaxed">
         {body}
       </p>
     </motion.article>

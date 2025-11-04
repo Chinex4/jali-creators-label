@@ -2,11 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import JaliButton from "../ui/JaliButton";
 
-/** ——— knobs you can tweak ——— */
-const GAP_FACTOR = 1; // 1 = packed (no extra space). >1 adds space between avatars on a rail
-const MOBILE_SIZE_SCALE = 0.58; // shrink avatar size on mobile
-const MOBILE_RAILS_COUNT = 6; // show only first N rails on mobile
-/** ———————————————————————————— */
+const GAP_FACTOR = 1;
+const MOBILE_SIZE_SCALE = 0.58;
+const MOBILE_RAILS_COUNT = 6;
 
 const AVATARS = Array.from(
   { length: 30 },
@@ -14,9 +12,9 @@ const AVATARS = Array.from(
 );
 
 type RailSpec = {
-  xPercent: number; // horizontal position (0–100)
+  xPercent: number;
   direction: "up" | "down";
-  count: number; // avatars per rail
+  count: number;
   size: number; // avatar size (px)
   duration: number; // seconds for one travel
   wobbleDelay?: number; // phase offset for gentle bob
