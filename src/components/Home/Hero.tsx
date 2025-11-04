@@ -230,7 +230,7 @@ export default function Hero() {
                   and fair growth.
                 </p>
 
-                <div className="mt-8 md:mt-12 flex flex-col sm:flex-row md:items-center md:justify-center gap-4 md:gap-6">
+                <div className="w-[200px] md:w-auto mx-auto md:mx-0 mt-8 md:mt-12 flex flex-col sm:flex-row md:items-center md:justify-center gap-4 md:gap-6">
                   <JaliButton
                     to="/register/creator"
                     variant="primary"
