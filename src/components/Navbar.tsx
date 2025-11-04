@@ -98,35 +98,42 @@ export default function Navbar() {
         className="md:hidden overflow-hidden"
       >
         <LayoutGroup id="nav-mobile">
-          <ul className="mx-4 mb-4 rounded-2xl border border-primary/10 bg-white">
+          <ul className="mx-4 mb-4 rounded-2xl border border-primary/10 bg-[#EFE8E1] overflow-hidden">
             {TABS.map((t) => {
               const active =
                 pathname === t.to ||
                 (t.to !== "/" && pathname.startsWith(t.to));
+
               return (
                 <li key={t.to} className="relative">
                   <NavLink
                     to={t.to}
-                    className="block px-5 py-4 text-lg font-extrabold"
+                    // isolate => create a new stacking context so the pill (z-0) stays behind text but above background
+                    className="block px-5 py-4 text-lg font-extrabold relative isolate"
                   >
-                    <div className="relative">
-                      {active && (
-                        <motion.span
-                          layoutId="activePillMobile"
-                          className="absolute inset-0 -z-10 rounded-xl bg-primary/10"
-                          transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 40,
-                          }}
-                        />
-                      )}
-                      <span
-                        className={active ? "text-primary" : "text-primary/70"}
-                      >
-                        {t.label}
-                      </span>
-                    </div>
+                    {active && (
+                      <motion.span
+                        layoutId="activePill"
+                        // use z-0 (not -z-10) so it isn't pushed behind the UL background
+                        className="absolute inset-0 z-0 rounded-xl bg-primary"
+                        transition={{
+                          type: "spring",
+                          stiffness: 500,
+                          damping: 40,
+                        }}
+                      />
+                    )}
+
+                    {/* Keep label above the pill */}
+                    <span
+                      className={
+                        active
+                          ? "relative z-10 text-white"
+                          : "relative z-10 text-primary/70"
+                      }
+                    >
+                      {t.label}
+                    </span>
                   </NavLink>
                 </li>
               );
@@ -137,7 +144,7 @@ export default function Navbar() {
         <div className="px-4 pb-4">
           <Link
             to="/contact"
-            className="flex justify-center items-center text-center rounded-full bg-primary text-white font-extrabold px-6 py-3"
+            className="flex justify-center items-center text-center rounded-full bg-primary text-white font-extrabold px-6 py-5"
           >
             <span>Chat With Us</span>
             <span className="ml-2 text-xl">

@@ -1,5 +1,12 @@
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import JaliButton from "../ui/JaliButton";
+
+/** ——— knobs you can tweak ——— */
+const GAP_FACTOR = 1; // 1 = packed (no extra space). >1 adds space between avatars on a rail
+const MOBILE_SIZE_SCALE = 0.58; // shrink avatar size on mobile
+const MOBILE_RAILS_COUNT = 6; // show only first N rails on mobile
+/** ———————————————————————————— */
 
 const AVATARS = Array.from(
   { length: 30 },
@@ -13,7 +20,21 @@ type RailSpec = {
   size: number; // avatar size (px)
   duration: number; // seconds for one travel
   wobbleDelay?: number; // phase offset for gentle bob
+  gapFactor?: number; // optional per-rail gap factor (falls back to GAP_FACTOR)
 };
+
+/* ——— helpers ——— */
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    const m = window.matchMedia(query);
+    const onChange = () => setMatches(m.matches);
+    onChange();
+    m.addEventListener?.("change", onChange);
+    return () => m.removeEventListener?.("change", onChange);
+  }, [query]);
+  return matches;
+}
 
 function Avatar({
   src,
@@ -43,9 +64,6 @@ function Avatar({
 }
 
 function Rail({ spec, sources }: { spec: RailSpec; sources: string[] }) {
-  // const start = spec.direction === "down" ? "-12%" : "112%";
-  // const end = spec.direction === "down" ? "112%" : "-12%";
-
   return (
     <div
       className="absolute top-0 bottom-0"
@@ -57,7 +75,10 @@ function Rail({ spec, sources }: { spec: RailSpec; sources: string[] }) {
 
       {/* avatars on this rail */}
       {sources.map((src, i) => {
-        const baseDelay = i * (spec.duration / sources.length) * 0.65;
+        // Packed chain by default; increase gap by raising gapFactor (>1)
+        const gap = spec.gapFactor ?? GAP_FACTOR;
+        const baseDelay = (i / sources.length) * spec.duration * gap;
+
         const size = spec.size;
         const start = spec.direction === "down" ? "-12%" : "112%";
         const end = spec.direction === "down" ? "112%" : "-12%";
@@ -90,13 +111,15 @@ function Rail({ spec, sources }: { spec: RailSpec; sources: string[] }) {
 }
 
 export default function Hero() {
+  const isMobile = useMediaQuery("(max-width: 640px)");
+
   // ----- RAIL SPECS (6 rails, alternating direction) -----
-  // xPercent spaces the rails nicely and stays responsive
-  const rails: RailSpec[] = [
+  // 10 avatars per rail as requested (desktop baseline)
+  const baseRails: RailSpec[] = [
     {
       xPercent: 8,
       direction: "down",
-      count: 5,
+      count: 10,
       size: 56,
       duration: 14,
       wobbleDelay: 0.0,
@@ -104,7 +127,7 @@ export default function Hero() {
     {
       xPercent: 24,
       direction: "up",
-      count: 5,
+      count: 10,
       size: 54,
       duration: 15,
       wobbleDelay: 0.2,
@@ -112,7 +135,7 @@ export default function Hero() {
     {
       xPercent: 40,
       direction: "down",
-      count: 5,
+      count: 10,
       size: 52,
       duration: 13,
       wobbleDelay: 0.4,
@@ -120,7 +143,7 @@ export default function Hero() {
     {
       xPercent: 60,
       direction: "up",
-      count: 5,
+      count: 10,
       size: 52,
       duration: 15,
       wobbleDelay: 0.6,
@@ -128,7 +151,7 @@ export default function Hero() {
     {
       xPercent: 76,
       direction: "down",
-      count: 5,
+      count: 10,
       size: 50,
       duration: 14,
       wobbleDelay: 0.8,
@@ -136,16 +159,35 @@ export default function Hero() {
     {
       xPercent: 92,
       direction: "up",
-      count: 5,
+      count: 10,
       size: 48,
       duration: 16,
       wobbleDelay: 1.0,
     },
   ];
 
-  // slice enough avatars to feed all rails
+  // Apply mobile adjustments: fewer rails + smaller avatars
+  const rails: RailSpec[] = useMemo(() => {
+    const selected = isMobile
+      ? baseRails.slice(0, MOBILE_RAILS_COUNT)
+      : baseRails;
+    if (!isMobile) return selected;
+
+    return selected.map((r) => ({
+      ...r,
+      // shrink avatar size
+      size: Math.round(r.size * MOBILE_SIZE_SCALE),
+      // optionally reduce count a bit on mobile if you want even more space (uncomment to use):
+      // count: Math.max(6, Math.round(r.count * 0.9)),
+    }));
+  }, [isMobile]);
+
+  // Ensure we have enough sources for all rails
   const totalNeeded = rails.reduce((a, r) => a + r.count, 0);
-  const pool = AVATARS.slice(0, totalNeeded);
+  const pool = Array.from(
+    { length: totalNeeded },
+    (_, i) => AVATARS[i % AVATARS.length]
+  );
 
   // chunk helper
   let cursor = 0;
@@ -170,7 +212,7 @@ export default function Hero() {
           className="pointer-events-none select-none absolute bottom-0 md:-bottom-10 -left-4 md:-left-14 w-24 md:w-52"
         />
 
-        {/* CONTENT (kept intact) */}
+        {/* CONTENT */}
         <div className="relative z-20">
           <div className="mx-auto max-w-4xl">
             <div className="relative">
@@ -178,19 +220,19 @@ export default function Hero() {
               <div className="text-center">
                 <h1
                   className="font-dela font-bold text-primary tracking-wider
-                             text-4xl leading-tight md:text-4xl md:leading-[1.05] lg:text-6xl"
+                             text-2xl leading-[1.1] md:text-4xl md:leading-[1.05] lg:text-6xl"
                 >
                   <span className="block">We Make Creators</span>
                   <span className="block">&amp; Brands Grow Together</span>
                 </h1>
 
-                <p className="mt-5 md:mt-6 text-primary/70 text-lg md:text-2xl">
+                <p className="mt-5 md:mt-6 text-primary/70 text-[15px] md:text-2xl">
                   Jali Creators Label built to empower{" "}
                   <br className="hidden md:block" /> collaboration, creativity,
                   and fair growth.
                 </p>
 
-                <div className="mt-8 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
+                <div className="mt-8 md:mt-12 flex flex-col sm:flex-row md:items-center md:justify-center gap-4 md:gap-6">
                   <JaliButton
                     to="/register/creator"
                     variant="primary"
@@ -215,13 +257,13 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Subtle top shade overlay (kept) */}
+        {/* Subtle top shade overlay */}
         <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/5 to-transparent" />
 
         {/* RAILS CANVAS (behind content) */}
         <div className="absolute inset-0 z-0 pointer-events-none">
-          {/* taller stage so avatars can enter/exit smoothly */}
-          <div className="absolute inset-x-0 top-[-35%] h-[170%]">
+          {/* Taller stage so avatars can enter/exit smoothly */}
+          <div className="absolute inset-x-0 top-[-60%] h-[220%]">
             {rails.map((r, i) => (
               <Rail key={i} spec={r} sources={pick(r.count)} />
             ))}
@@ -232,11 +274,9 @@ export default function Hero() {
       {/* small responsive tweaks */}
       <style>{`
         @media (max-width: 1024px) {
-          /* nudge rails inward a bit on medium screens */
           .rail-tighten {}
         }
         @media (max-width: 640px) {
-          /* scale down the whole canvas so it still looks airy */
           .absolute.inset-x-0.top-\\[-35%\\].h-\\[170%\\] {
             transform: scale(0.85);
             transform-origin: center top;

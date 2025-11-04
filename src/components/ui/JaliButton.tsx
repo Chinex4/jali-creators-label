@@ -43,7 +43,7 @@ function classes(
   if (variant === "secondary") {
     return cn(
       shared,
-      "bg-transparent border-[2px] border-b-[4px] py-3 border-primary text-primary",
+      "bg-[#F2EDE7] border-[2px] border-b-[4px] py-3 border-primary text-primary",
       "hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(0,0,0,0.08)]",
       "active:translate-y-0 active:shadow-none",
       "focus-visible:ring-4 focus-visible:ring-primary/20",

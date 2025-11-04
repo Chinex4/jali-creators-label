@@ -22,10 +22,10 @@ export default function ContactSection() {
     <section id="contact" className="mx-auto max-w-6xl px-4 py-12 md:py-16">
       <div className="grid gap-10 md:gap-16 md:grid-cols-2 items-start">
         {/* Left copy */}
-        <div>
+        <div className="text-center md:text-left">
           <p className="text-primary/60 mb-3 text-lg">Contact Us Today</p>
           <h2 className="font-extrabold text-primary leading-tight tracking-wide
-                         text-3xl sm:text-4xl font-dela">
+                         text-2xl sm:text-4xl font-dela">
             Drop A Request Or
             <br /> Feedback About Our
             <br /> Services.
