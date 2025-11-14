@@ -8,12 +8,14 @@ import CreatorRegister from "./pages/register/CreatorRegister";
 import BusinessRegister from "./pages/register/BusinessRegister";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF7F2] text-primary">
+      <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       <Navbar />
-          <ScrollToTop />
+      <ScrollToTop />
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
